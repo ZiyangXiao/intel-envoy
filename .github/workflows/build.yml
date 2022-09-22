@@ -1,0 +1,36 @@
+
+name: CI
+
+on:
+
+  push:
+    branches: [ release-*-intel-ci ]
+  pull_request:
+    branches: [ release-*-intel-ci ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  build:
+ 
+    runs-on: [self-hosted]
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Build image
+        shell: bash
+        run: |
+          ./.github/workflows/build.sh
+
+      - name: Push image
+        shell: bash
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          TAG=${{ github.ref_name }}
+          docker tag ${HUB}/proxyv2:pre-build ${HUB}/proxyv2:${TAG}
+          docker push ${HUB}/proxyv2:${TAG}
+        env:
+          HUB: localhost:5000
