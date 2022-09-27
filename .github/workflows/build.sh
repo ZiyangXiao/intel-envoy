@@ -13,7 +13,7 @@ UPDATE_BRANCH=${UPDATE_BRANCH:-"release-1.15-intel"}
 cd ..
 rm -rf istio-proxy
 git clone -b ${UPDATE_BRANCH} https://github.com/intel/istio-proxy.git
-cp -rf envoy/ istio-proxy/ 
+cp -rf intel-envoy/ istio-proxy/ 
 cd istio-proxy
 git clone -b ${UPDATE_BRANCH} https://github.com/intel/istio.git
 
@@ -22,7 +22,7 @@ git clone -b ${UPDATE_BRANCH} https://github.com/intel/istio.git
 cp -f WORKSPACE WORKSPACE.bazel
 sed  -i '/http_archive(/{:a;N;/)/!ba;s/.*name = "envoy".*/local_repository(\
     name = "envoy",\
-    path = "envoy",\
+    path = "intel-envoy",\
 )/g}' WORKSPACE.bazel
 
 # build envoy binary in container with sgx
